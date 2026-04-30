@@ -1,0 +1,30 @@
+[
+  {
+    "id": "evt_1",
+    "title": "Compose Meetup: State & Side Effects",
+    "locationName": "Indiranagar, Bengaluru",
+    "latitude": 12.9718915,
+    "longitude": 77.6411545,
+    "startTimeEpochMillis": 1777565400000,
+    "imageUrl": "https://picsum.photos/seed/compose/800/500"
+  },
+  {
+    "id": "evt_2",
+    "title": "Food Truck Festival",
+    "locationName": "Cubbon Park, Bengaluru",
+    "latitude": 12.976347,
+    "longitude": 77.592898,
+    "startTimeEpochMillis": 1777572600000,
+    "imageUrl": "https://picsum.photos/seed/food/800/500"
+  },
+  {
+    "id": "evt_3",
+    "title": "Sunrise Run",
+    "locationName": "Lalbagh Botanical Garden, Bengaluru",
+    "latitude": 12.950743,
+    "longitude": 77.584777,
+    "startTimeEpochMillis": 1777529400000,
+    "imageUrl": "https://picsum.photos/seed/run/800/500"
+  }
+]
+
