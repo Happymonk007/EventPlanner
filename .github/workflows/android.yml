@@ -1,6 +1,5 @@
 name: Android CI
 
-# Runs on every push (all branches) and on pull requests.
 on: [push, pull_request]
 
 jobs:
@@ -15,9 +14,21 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      # Required for ./gradlew — GitHub runners do not include the Android SDK and local.properties is not committed.
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          log-accepted-android-sdk-licenses: true
+          packages: >-
+            platforms;android-36
+            build-tools;35.0.0
+            platform-tools
+
+      - name: Gradle wrapper permissions
+        run: chmod +x gradlew
+
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build & lint
-        run: ./gradlew check
-
+        run: ./gradlew check --no-daemon
