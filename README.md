@@ -1,120 +1,83 @@
-## EventPlanner — Local Events Explorer (Assignment 1)
+## EventPlanner — Local Events Explorer
 
-Kotlin + Jetpack Compose implementation of **“Local Events Explorer”** with:
-- **MVVM + DI (Hilt)**
-- **Remote API integration (Retrofit/OkHttp)** with **fallback** to bundled JSON for offline demo
-- **Local persistence (Room)** for **last-fetched events** + **bookmarks**
-- **Caching**: HTTP cache (OkHttp) + image cache (Coil)
-- **Native features**: coarse location permission → distance to event, plus **deep link to Maps**
-- **Startup load**: events list is populated once from the **API** (with **asset fallback** when the network fails)
-- **Engineering standards**: ktlint + basic CI workflow
-- **Unit tests**: 3 JVM unit tests for core logic
+Kotlin **Jetpack Compose** app for browsing nearby-style events: list, details, bookmarks, optional distance from coarse location, and **Open in Maps**.
+
+### Features
+
+- **MVVM** + **Hilt**, **Navigation Compose**
+- **Retrofit / OkHttp** (disk cache) + **Coil** for images
+- **Room** for events and bookmarks
+- **Startup load**: fetch JSON once, persist to Room; UI observes the database
+- **Quality**: ktlint, GitHub Actions runs `./gradlew check`, JVM unit tests under `app/src/test`
 
 ### Requirements
-- Android Studio (latest stable)
-- JDK 17 (recommended for Gradle/AGP)
-- Android device/emulator (API 24+)
 
-### Run steps
-1. Open the project in Android Studio.
-2. Sync Gradle.
-3. Run the `app` configuration.
+Android Studio (current stable), **JDK 17**, device or emulator **API 24+**.
 
-### Configure the remote API (optional)
-The repository attempts a remote fetch first, then falls back to `app/src/main/assets/events.json`.
+### Run
 
-To use a real mock REST endpoint:
-- Edit `app/build.gradle.kts`:
-  - `BuildConfig.EVENTS_BASE_URL`
-  - `BuildConfig.EVENTS_PATH`
+1. Open the project in Android Studio.  
+2. Sync Gradle.  
+3. Run the **`app`** configuration.
 
-Expected response shape: JSON array of events:
+### Screens
 
-```json
-[
-  {
-    "id": "evt_1",
-    "title": "…",
-    "locationName": "…",
-    "latitude": 12.97,
-    "longitude": 77.64,
-    "startTimeEpochMillis": 1777565400000,
-    "imageUrl": "https://…"
-  }
-]
-```
+| Area | Notes |
+|------|--------|
+| **Events** | List, bookmark toggle, distance when location permission granted |
+| **Details** | Full info, bookmark, Maps deep link |
+| **Bookmarks** | Saved events from Room |
 
-### Key screens
-- **Events**: list of cached events + bookmark toggle + optional distance (location permission)
-- **Details**: event info + bookmark toggle + **Open in Maps**
-- **Bookmarks**: locally persisted bookmarks
+### Events data & configuration
 
-### Caching strategy
-- **Events**:
-  - Fetched once when the Events screen view model starts (`loadEvents()`): Retrofit first, then `events.json` if the request fails
-  - Stored in Room with `fetchedAtEpochMillis` for metadata
-- **HTTP**: OkHttp configured with a disk cache (10 MB)
-- **Images**: Coil handles memory + disk caching by default
+The remote URL is **`EVENTS_BASE_URL` + `EVENTS_PATH`** in `app/build.gradle.kts`. The app requests that URL with Retrofit; if the call fails, it reads **`app/src/main/assets/events.json`** (same JSON shape).
 
-### Engineering standards
-- **Architecture**: single-activity app with Compose Navigation; MVVM per screen
-- **Separation of concerns**:
-  - `data/*`: Retrofit/Room implementations and mappers
-  - `domain/*`: models + repository interfaces + pure logic (`CachePolicy` utilities)
-  - `ui/*`: Compose screens, viewmodels, formatters
-- **Lint**: ktlint configured in Gradle
-- **CI**: GitHub Actions workflow runs `./gradlew check`
+Default remote points at this repo’s **`events.json` on GitHub** (`raw.githubusercontent.com`, `main` branch). If your default branch is not `main`, or the file is not on that branch yet, the network step may fail and the **bundled asset** is used instead—expected until the repo matches.
 
-### Useful Gradle commands
+Expected JSON: array of objects with (at least) `id`, `title`, `locationName`, `latitude`, `longitude`, `startTimeEpochMillis`, `imageUrl`.
+
+### Gradle
+
 ```bash
-./gradlew test
+./gradlew test      # unit tests
 ./gradlew ktlintCheck
-./gradlew check
+./gradlew check     # tests + lint + compile checks used in CI
 ```
 
-### Unit tests (3)
-- `CachePolicyTest` — TTL staleness decision
-- `FormattersTest` — distance formatting
-- `EventMappersTest` — mapping DTO/entity/domain
+### Architecture
 
-### Architecture diagram
 ```mermaid
 flowchart LR
   UI[Compose UI] --> VM[ViewModels]
-  VM --> DR[Domain Repos (interfaces)]
-  DR --> R[Data Repos (impl)]
+  VM --> DR["Domain repository interfaces"]
+  DR --> R["Repository implementations"]
   R -->|observe| Room[(Room DB)]
   R -->|fetch| Retrofit[Retrofit API]
   R -->|fallback| Assets[events.json]
   VM --> Loc[LocationRepository] --> Fused[FusedLocationProvider]
 ```
 
-### Sequence diagram (initial load + cache)
+### Sequence (first load)
+
 ```mermaid
 sequenceDiagram
   participant UI as EventsScreen
   participant VM as EventsViewModel
   participant Repo as EventsRepository
-  participant DB as Room(EventDao)
-  participant API as Retrofit(EventsApi)
-  participant A as Assets(events.json)
+  participant "EventDao (Room)" as DB
+  participant "EventsApi (Retrofit)" as API
+  participant "events.json (assets)" as A
 
   UI->>VM: subscribe
-  VM->>Repo: init loadEvents()
-  Repo->>API: getEvents(url)
-  alt network fails
+  VM->>Repo: loadEvents()
+  Repo->>API: GET configured URL
+  alt request fails
     Repo->>A: readEventsFromAssets()
   end
-  Repo->>DB: deleteAll()
-  Repo->>DB: upsertAll(events with fetchedAt=now)
-  DB-->>UI: observeEvents() Flow emits list
+  Repo->>DB: deleteAll + upsertAll
+  DB-->>UI: observeEvents Flow
 ```
 
-### Demo video (3 minutes)
-Suggested flow:
-1. Show Events list (with images), bookmark a couple of events.
-2. Open Details, use “Open in Maps”.
-3. Open Bookmarks tab.
-4. Toggle airplane mode and relaunch to show offline data still present.
-5. Mention HTTP/image caching and offline Room data after first load.
+### Unit tests
 
+Includes **`CachePolicyTest`**, **`FormattersTest`**, **`EventMappersTest`**.

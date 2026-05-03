@@ -1,9 +1,7 @@
 name: Android CI
 
-on:
-  pull_request:
-  push:
-    branches: [ "main", "master" ]
+# Runs on every push (all branches) and on pull requests.
+on: [push, pull_request]
 
 jobs:
   build:

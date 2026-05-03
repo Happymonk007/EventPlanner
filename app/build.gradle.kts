@@ -23,10 +23,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Mock endpoint base URL. Repo also falls back to bundled assets if network is unavailable.
-        buildConfigField("String", "EVENTS_BASE_URL", "\"https://run.mocky.io/\"")
-        // Example path segment; replace with your own mocky id if desired.
-        buildConfigField("String", "EVENTS_PATH", "\"v3/REPLACE_ME\"")
+        // Retrofit loads this URL first; repository falls back to assets/events.json if the request fails.
+        // Adjust branch (main) if your GitHub default branch differs.
+        buildConfigField(
+            "String",
+            "EVENTS_BASE_URL",
+            "\"https://raw.githubusercontent.com/Happymonk007/EventPlanner/main/app/src/main/assets/\"",
+        )
+        buildConfigField("String", "EVENTS_PATH", "\"events.json\"")
     }
 
     buildTypes {
