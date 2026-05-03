@@ -9,9 +9,10 @@ plugins {
 android {
     namespace = "com.example.eventplanner"
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+        version =
+            release(36) {
+                minorApiLevel = 1
+            }
     }
 
     defaultConfig {
@@ -28,7 +29,8 @@ android {
         buildConfigField(
             "String",
             "EVENTS_BASE_URL",
-            "\"https://raw.githubusercontent.com/Happymonk007/EventPlanner/main/app/src/main/assets/\"",
+            "\"https://raw.githubusercontent.com/" +
+                "Happymonk007/EventPlanner/main/app/src/main/assets/\"",
         )
         buildConfigField("String", "EVENTS_PATH", "\"events.json\"")
     }
@@ -38,7 +40,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
