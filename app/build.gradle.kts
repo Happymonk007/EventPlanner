@@ -27,8 +27,6 @@ android {
         buildConfigField("String", "EVENTS_BASE_URL", "\"https://run.mocky.io/\"")
         // Example path segment; replace with your own mocky id if desired.
         buildConfigField("String", "EVENTS_PATH", "\"v3/REPLACE_ME\"")
-        // Cache TTL for event refresh decisions (milliseconds)
-        buildConfigField("long", "EVENTS_TTL_MS", "3600000L")
     }
 
     buildTypes {
@@ -64,6 +62,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
@@ -76,9 +75,7 @@ dependencies {
     // DI
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.compiler)
-    ksp(libs.androidx.hilt.compiler)
 
     // Networking
     implementation(libs.retrofit)
@@ -92,9 +89,6 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
-
-    // Background work
-    implementation(libs.androidx.work.runtime.ktx)
 
     // Images
     implementation(libs.coil.compose)

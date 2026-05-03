@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,8 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,23 +29,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.eventplanner.ui.util.formatEpochMillis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventDetailsScreen(
     contentPadding: PaddingValues,
-    eventId: String,
     onBack: () -> Unit,
     viewModel: EventDetailsViewModel = hiltViewModel(),
 ) {
-    val eventFlow = viewModel.event(eventId)
-    val event by eventFlow.collectAsState()
+    val event by viewModel.event.collectAsState()
     val context = LocalContext.current
+    val scroll = rememberScrollState()
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
@@ -59,7 +61,7 @@ fun EventDetailsScreen(
             actions = {
                 val current = event
                 if (current != null) {
-                    IconButton(onClick = { viewModel.setBookmarked(current.id, !current.isBookmarked) }) {
+                    IconButton(onClick = { viewModel.setBookmarked(!current.isBookmarked) }) {
                         if (current.isBookmarked) {
                             Icon(Icons.Filled.Bookmark, contentDescription = "Remove bookmark")
                         } else {
@@ -79,39 +81,61 @@ fun EventDetailsScreen(
             return
         }
 
+        val imageUrl = current.imageUrl
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(bottom = contentPadding.calculateBottomPadding())
+                .verticalScroll(scroll),
         ) {
-            if (current.imageUrl != null) {
+            if (imageUrl != null) {
                 AsyncImage(
-                    model = current.imageUrl,
+                    model = ImageRequest.Builder(context)
+                        .data(imageUrl)
+                        .size(800, 500)
+                        .memoryCacheKey(imageUrl)
+                        .diskCacheKey(imageUrl)
+                        .crossfade(false)
+                        .build(),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().height(220.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(240.dp),
+                    contentScale = ContentScale.Crop,
                 )
             }
 
-            Text(current.title, style = MaterialTheme.typography.headlineSmall)
-            Text(
-                "${current.locationName} • ${formatEpochMillis(current.startTimeEpochMillis)}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(current.title, style = MaterialTheme.typography.headlineSmall)
+                Text(
+                    "${current.locationName} • ${formatEpochMillis(current.startTimeEpochMillis)}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
 
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                val mapsBlue = Color(0xFF4285F4)
                 Button(
                     onClick = {
                         val uri = Uri.parse("geo:${current.latitude},${current.longitude}?q=${current.latitude},${current.longitude}(${Uri.encode(current.title)})")
                         context.startActivity(Intent(Intent.ACTION_VIEW, uri))
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = mapsBlue,
+                        contentColor = Color.White,
+                    ),
                 ) {
-                    Icon(Icons.Filled.Map, contentDescription = null)
+                    Icon(
+                        painter = painterResource(android.R.drawable.ic_dialog_map),
+                        contentDescription = null,
+                        tint = Color.White,
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Open in Maps")
                 }
@@ -119,4 +143,3 @@ fun EventDetailsScreen(
         }
     }
 }
-

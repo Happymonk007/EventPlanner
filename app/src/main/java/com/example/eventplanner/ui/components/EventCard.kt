@@ -18,13 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.eventplanner.domain.model.Event
 import com.example.eventplanner.ui.util.distanceMeters
 import com.example.eventplanner.ui.util.formatDistance
 import com.example.eventplanner.ui.util.formatEpochMillis
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun EventCard(
@@ -34,15 +37,21 @@ fun EventCard(
     onToggleBookmark: (Boolean) -> Unit,
     onClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             if (event.imageUrl != null) {
                 AsyncImage(
-                    model = event.imageUrl,
+                    model = ImageRequest.Builder(context)
+                        .data(event.imageUrl)
+                        .size(800, 500) // avoid decoding huge images on emulator
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxWidth().height(160.dp),
+                    contentScale = ContentScale.Crop,
                 )
             }
             Column(modifier = Modifier.padding(12.dp)) {

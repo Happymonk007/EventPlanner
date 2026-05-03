@@ -13,13 +13,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.eventplanner.ui.bookmarks.BookmarksScreen
 import com.example.eventplanner.ui.details.EventDetailsScreen
 import com.example.eventplanner.ui.events.EventsScreen
+
+const val NAV_ARG_EVENT_ID = "eventId"
 
 @Composable
 fun AppRoot() {
@@ -72,11 +76,14 @@ fun AppRoot() {
                     onOpenDetails = { eventId -> navController.navigate(Route.EventDetails.create(eventId)) },
                 )
             }
-            composable(Route.EventDetails.pattern) { backStack ->
-                val eventId = backStack.arguments?.getString(Route.EventDetails.ARG_EVENT_ID).orEmpty()
+            composable(
+                route = Route.EventDetails.pattern,
+                arguments = listOf(
+                    navArgument(NAV_ARG_EVENT_ID) { type = NavType.StringType },
+                ),
+            ) {
                 EventDetailsScreen(
                     contentPadding = innerPadding,
-                    eventId = eventId,
                     onBack = { navController.popBackStack() },
                 )
             }
@@ -96,8 +103,8 @@ private enum class BottomNavItem(
 private sealed class Route(val route: String) {
     data object Events : Route("events")
     data object Bookmarks : Route("bookmarks")
-    data object EventDetails : Route("event/{eventId}") {
-        const val ARG_EVENT_ID = "eventId"
+    data object EventDetails : Route("event/{$NAV_ARG_EVENT_ID}") {
+        const val ARG_EVENT_ID = NAV_ARG_EVENT_ID
         val pattern: String = route
         fun create(eventId: String): String = "event/$eventId"
     }

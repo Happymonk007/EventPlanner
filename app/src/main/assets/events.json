@@ -1,30 +1,47 @@
 [
   {
-    "id": "evt_1",
+    "id": "pune_1",
+    "title": "Pune Tech Mixer: Kotlin & Compose",
+    "locationName": "Koregaon Park, Pune",
+    "latitude": 18.536200,
+    "longitude": 73.893700,
+    "startTimeEpochMillis": 1779109200000,
+    "imageUrl": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "pune_2",
+    "title": "Coffee & Code Morning",
+    "locationName": "Baner, Pune",
+    "latitude": 18.559000,
+    "longitude": 73.786800,
+    "startTimeEpochMillis": 1778385600000,
+    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "pune_3",
+    "title": "Monsoon Trail Walk",
+    "locationName": "Sinhagad Fort, Pune",
+    "latitude": 18.366300,
+    "longitude": 73.755900,
+    "startTimeEpochMillis": 1778463000000,
+    "imageUrl": "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "pune_4",
+    "title": "Street Food Fiesta",
+    "locationName": "FC Road, Pune",
+    "latitude": 18.520400,
+    "longitude": 73.856700,
+    "startTimeEpochMillis": 1778938200000,
+    "imageUrl": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "pune_5",
     "title": "Compose Meetup: State & Side Effects",
-    "locationName": "Indiranagar, Bengaluru",
-    "latitude": 12.9718915,
-    "longitude": 77.6411545,
-    "startTimeEpochMillis": 1777565400000,
-    "imageUrl": "https://picsum.photos/seed/compose/800/500"
-  },
-  {
-    "id": "evt_2",
-    "title": "Food Truck Festival",
-    "locationName": "Cubbon Park, Bengaluru",
-    "latitude": 12.976347,
-    "longitude": 77.592898,
-    "startTimeEpochMillis": 1777572600000,
-    "imageUrl": "https://picsum.photos/seed/food/800/500"
-  },
-  {
-    "id": "evt_3",
-    "title": "Sunrise Run",
-    "locationName": "Lalbagh Botanical Garden, Bengaluru",
-    "latitude": 12.950743,
-    "longitude": 77.584777,
-    "startTimeEpochMillis": 1777529400000,
-    "imageUrl": "https://picsum.photos/seed/run/800/500"
+    "locationName": "Kalyani Nagar, Pune",
+    "latitude": 18.542200,
+    "longitude": 73.905600,
+    "startTimeEpochMillis": 1779283800000,
+    "imageUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
   }
 ]
-

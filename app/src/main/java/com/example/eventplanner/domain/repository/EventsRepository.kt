@@ -8,8 +8,7 @@ interface EventsRepository {
     fun observeBookmarkedEvents(): Flow<List<Event>>
     fun observeEvent(eventId: String): Flow<Event?>
 
-    suspend fun refreshEventsIfStale(nowEpochMillis: Long = System.currentTimeMillis()): RefreshResult
-    suspend fun forceRefresh(nowEpochMillis: Long = System.currentTimeMillis()): RefreshResult
+    suspend fun loadEvents(nowEpochMillis: Long = System.currentTimeMillis()): RefreshResult
 
     suspend fun setBookmarked(eventId: String, bookmarked: Boolean, nowEpochMillis: Long = System.currentTimeMillis())
 }

@@ -2,10 +2,13 @@ package com.example.eventplanner.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val PrimaryDark = Color(0xFF7C4DFF)
+val SecondaryDark = Color(0xFF00E5FF)
+val TertiaryDark = Color(0xFFFF4081)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val PrimaryLight = Color(0xFF5B2EFF)
+val SecondaryLight = Color(0xFF00B8D4)
+val TertiaryLight = Color(0xFFFF2D6D)
+
+val SurfaceTintLight = Color(0xFFFFB300)
+val SurfaceTintDark = Color(0xFFFFD54F)

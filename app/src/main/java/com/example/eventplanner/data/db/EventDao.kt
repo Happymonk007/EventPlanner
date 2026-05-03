@@ -46,9 +46,6 @@ interface EventDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(events: List<EventEntity>)
 
-    @Query("SELECT MAX(fetchedAtEpochMillis) FROM events")
-    suspend fun getLastFetchedAtEpochMillis(): Long?
-
     @Query("DELETE FROM events")
     suspend fun deleteAll()
 }
