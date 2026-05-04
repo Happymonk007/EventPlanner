@@ -81,3 +81,10 @@ sequenceDiagram
 ### Unit tests
 
 Includes **`CachePolicyTest`**, **`FormattersTest`**, **`EventMappersTest`**.
+
+### Demo Video
+
+https://github.com/user-attachments/assets/440f25ec-7e39-4a2c-ba6e-39aea8c7edd1
+
+
+
