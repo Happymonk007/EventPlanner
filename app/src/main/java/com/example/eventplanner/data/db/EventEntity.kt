@@ -13,5 +13,6 @@ data class EventEntity(
     val startTimeEpochMillis: Long,
     val imageUrl: String?,
     val fetchedAtEpochMillis: Long,
+    val isBookmarked: Boolean,
 )
 

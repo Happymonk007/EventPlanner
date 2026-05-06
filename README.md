@@ -34,7 +34,7 @@ The remote URL is **`EVENTS_BASE_URL` + `EVENTS_PATH`** in `app/build.gradle.kts
 
 Default remote points at this repo’s **`events.json` on GitHub** (`raw.githubusercontent.com`, `main` branch). If your default branch is not `main`, or the file is not on that branch yet, the network step may fail and the **bundled asset** is used instead—expected until the repo matches.
 
-Expected JSON: array of objects with (at least) `id`, `title`, `locationName`, `latitude`, `longitude`, `startTimeEpochMillis`, `imageUrl`.
+Expected JSON: array of objects with (at least) `id`, `title`, `locationName`, `latitude`, `longitude`, `startTimeEpochMillis` (milliseconds), `imageUrl`.
 
 ### Gradle
 

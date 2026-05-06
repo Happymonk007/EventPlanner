@@ -2,7 +2,6 @@ package com.example.eventplanner.data.mappers
 
 import com.example.eventplanner.data.api.EventDto
 import com.example.eventplanner.data.db.EventEntity
-import com.example.eventplanner.data.db.EventWithBookmark
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -20,7 +19,10 @@ class EventMappersTest {
             imageUrl = "https://example.com/a.png",
         )
 
-        val entity: EventEntity = dto.toEntity(fetchedAtEpochMillis = 1234L)
+        val entity: EventEntity = dto.toEntity(
+            fetchedAtEpochMillis = 1234L,
+            isBookmarked = false,
+        )
         assertEquals("id1", entity.id)
         assertEquals("Title", entity.title)
         assertEquals("Loc", entity.locationName)
@@ -32,7 +34,7 @@ class EventMappersTest {
     }
 
     @Test
-    fun `eventWithBookmark toDomain maps isBookmarked`() {
+    fun `eventEntity toDomain maps isBookmarked`() {
         val entity = EventEntity(
             id = "id1",
             title = "Title",
@@ -42,9 +44,9 @@ class EventMappersTest {
             startTimeEpochMillis = 3L,
             imageUrl = null,
             fetchedAtEpochMillis = 4L,
+            isBookmarked = true,
         )
-        val withBookmark = EventWithBookmark(event = entity, isBookmarked = true)
-        val domain = withBookmark.toDomain()
+        val domain = entity.toDomain()
         assertEquals("id1", domain.id)
         assertEquals(true, domain.isBookmarked)
     }

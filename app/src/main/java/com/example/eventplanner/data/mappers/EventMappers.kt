@@ -2,10 +2,12 @@ package com.example.eventplanner.data.mappers
 
 import com.example.eventplanner.data.api.EventDto
 import com.example.eventplanner.data.db.EventEntity
-import com.example.eventplanner.data.db.EventWithBookmark
 import com.example.eventplanner.domain.model.Event
 
-fun EventDto.toEntity(fetchedAtEpochMillis: Long): EventEntity =
+fun EventDto.toEntity(
+    fetchedAtEpochMillis: Long,
+    isBookmarked: Boolean,
+): EventEntity =
     EventEntity(
         id = id,
         title = title,
@@ -15,17 +17,18 @@ fun EventDto.toEntity(fetchedAtEpochMillis: Long): EventEntity =
         startTimeEpochMillis = startTimeEpochMillis,
         imageUrl = imageUrl,
         fetchedAtEpochMillis = fetchedAtEpochMillis,
+        isBookmarked = isBookmarked,
     )
 
-fun EventWithBookmark.toDomain(): Event =
+fun EventEntity.toDomain(): Event =
     Event(
-        id = event.id,
-        title = event.title,
-        locationName = event.locationName,
-        latitude = event.latitude,
-        longitude = event.longitude,
-        startTimeEpochMillis = event.startTimeEpochMillis,
-        imageUrl = event.imageUrl,
+        id = id,
+        title = title,
+        locationName = locationName,
+        latitude = latitude,
+        longitude = longitude,
+        startTimeEpochMillis = startTimeEpochMillis,
+        imageUrl = imageUrl,
         isBookmarked = isBookmarked,
     )
 

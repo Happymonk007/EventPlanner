@@ -46,7 +46,7 @@ fun EventCard(
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(event.imageUrl)
-                        .size(800, 500) // avoid decoding huge images on emulator
+                        .size(800, 500)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,

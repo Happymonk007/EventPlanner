@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.Button
@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.eventplanner.ui.util.formatEpochMillis
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +56,7 @@ fun EventDetailsScreen(
             title = { Text(event?.title ?: "Event details") },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
             actions = {
@@ -123,7 +124,10 @@ fun EventDetailsScreen(
                 val mapsBlue = Color(0xFF4285F4)
                 Button(
                     onClick = {
-                        val uri = Uri.parse("geo:${current.latitude},${current.longitude}?q=${current.latitude},${current.longitude}(${Uri.encode(current.title)})")
+                        val uri =
+                            "geo:${current.latitude},${current.longitude}?q=${current.latitude},${current.longitude}(${
+                                Uri.encode(current.title)
+                            })".toUri()
                         context.startActivity(Intent(Intent.ACTION_VIEW, uri))
                     },
                     colors = ButtonDefaults.buttonColors(

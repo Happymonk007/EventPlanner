@@ -3,8 +3,6 @@ package com.example.eventplanner.data.repository
 import com.example.eventplanner.BuildConfig
 import com.example.eventplanner.data.api.EventsApi
 import com.example.eventplanner.data.assets.EventsAssetDataSource
-import com.example.eventplanner.data.db.BookmarkDao
-import com.example.eventplanner.data.db.BookmarkEntity
 import com.example.eventplanner.data.db.EventDao
 import com.example.eventplanner.data.mappers.toDomain
 import com.example.eventplanner.data.mappers.toEntity
@@ -21,7 +19,6 @@ class EventsRepositoryImpl @Inject constructor(
     private val api: EventsApi,
     private val eventsAssetDataSource: EventsAssetDataSource,
     private val eventDao: EventDao,
-    private val bookmarkDao: BookmarkDao,
 ) : EventsRepository {
 
     override fun observeEvents(): Flow<List<Event>> =
@@ -35,6 +32,7 @@ class EventsRepositoryImpl @Inject constructor(
 
     override suspend fun loadEvents(nowEpochMillis: Long): RefreshResult {
         return withContext(Dispatchers.IO) {
+            val previouslyBookmarkedIds = eventDao.getBookmarkedIds().toSet()
             val dtos = runCatching {
                 val urlOrPath = "${BuildConfig.EVENTS_BASE_URL}${BuildConfig.EVENTS_PATH}"
                 api.getEvents(urlOrPath)
@@ -44,7 +42,14 @@ class EventsRepositoryImpl @Inject constructor(
 
             runCatching {
                 eventDao.deleteAll()
-                eventDao.upsertAll(dtos.map { it.toEntity(fetchedAtEpochMillis = nowEpochMillis) })
+                eventDao.upsertAll(
+                    dtos.map { dto ->
+                        dto.toEntity(
+                            fetchedAtEpochMillis = nowEpochMillis,
+                            isBookmarked = previouslyBookmarkedIds.contains(dto.id),
+                        )
+                    },
+                )
                 RefreshResult.Success
             }.getOrElse { e ->
                 RefreshResult.Failed(e.message ?: "Unknown persistence error")
@@ -53,11 +58,7 @@ class EventsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setBookmarked(eventId: String, bookmarked: Boolean, nowEpochMillis: Long) {
-        if (bookmarked) {
-            bookmarkDao.add(BookmarkEntity(eventId = eventId, createdAtEpochMillis = nowEpochMillis))
-        } else {
-            bookmarkDao.remove(eventId)
-        }
+        eventDao.setBookmarked(eventId, bookmarked)
     }
 }
 

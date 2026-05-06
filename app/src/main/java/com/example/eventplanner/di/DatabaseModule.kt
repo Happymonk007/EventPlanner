@@ -2,7 +2,6 @@ package com.example.eventplanner.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.eventplanner.data.db.BookmarkDao
 import com.example.eventplanner.data.db.EventDao
 import com.example.eventplanner.data.db.EventPlannerDatabase
 import dagger.Module
@@ -25,8 +24,5 @@ object DatabaseModule {
 
     @Provides
     fun provideEventDao(db: EventPlannerDatabase): EventDao = db.eventDao()
-
-    @Provides
-    fun provideBookmarkDao(db: EventPlannerDatabase): BookmarkDao = db.bookmarkDao()
 }
 

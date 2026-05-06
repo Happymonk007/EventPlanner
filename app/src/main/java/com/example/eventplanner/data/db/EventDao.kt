@@ -9,39 +9,20 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface EventDao {
 
-    @Query(
-        """
-        SELECT e.*,
-               CASE WHEN b.eventId IS NULL THEN 0 ELSE 1 END AS isBookmarked
-        FROM events e
-        LEFT JOIN bookmarks b ON b.eventId = e.id
-        ORDER BY e.startTimeEpochMillis ASC
-        """
-    )
-    fun observeEvents(): Flow<List<EventWithBookmark>>
+    @Query("SELECT * FROM events ORDER BY startTimeEpochMillis ASC")
+    fun observeEvents(): Flow<List<EventEntity>>
 
-    @Query(
-        """
-        SELECT e.*,
-               CASE WHEN b.eventId IS NULL THEN 0 ELSE 1 END AS isBookmarked
-        FROM events e
-        LEFT JOIN bookmarks b ON b.eventId = e.id
-        WHERE e.id = :eventId
-        LIMIT 1
-        """
-    )
-    fun observeEvent(eventId: String): Flow<EventWithBookmark?>
+    @Query("SELECT * FROM events WHERE id = :eventId LIMIT 1")
+    fun observeEvent(eventId: String): Flow<EventEntity?>
 
-    @Query(
-        """
-        SELECT e.*,
-               1 AS isBookmarked
-        FROM events e
-        INNER JOIN bookmarks b ON b.eventId = e.id
-        ORDER BY e.startTimeEpochMillis ASC
-        """
-    )
-    fun observeBookmarkedEvents(): Flow<List<EventWithBookmark>>
+    @Query("SELECT * FROM events WHERE isBookmarked = 1 ORDER BY startTimeEpochMillis ASC")
+    fun observeBookmarkedEvents(): Flow<List<EventEntity>>
+
+    @Query("SELECT id FROM events WHERE isBookmarked = 1")
+    suspend fun getBookmarkedIds(): List<String>
+
+    @Query("UPDATE events SET isBookmarked = :bookmarked WHERE id = :eventId")
+    suspend fun setBookmarked(eventId: String, bookmarked: Boolean)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(events: List<EventEntity>)
