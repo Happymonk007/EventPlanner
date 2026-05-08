@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.eventplanner.ui.components.EventCard
+import androidx.compose.ui.res.stringResource
+import com.example.eventplanner.R
+import com.example.eventplanner.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,12 +31,12 @@ fun BookmarksScreen(
     val events by viewModel.bookmarkedEvents.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text("Bookmarks") })
+        TopAppBar(title = { Text(stringResource(R.string.title_bookmarks)) })
 
         if (events.isEmpty()) {
             Text(
-                text = "No bookmarks yet.",
-                modifier = Modifier.padding(contentPadding).padding(16.dp),
+                text = stringResource(R.string.bookmarks_empty),
+                modifier = Modifier.padding(contentPadding).padding(Dimens.screenPadding),
                 style = MaterialTheme.typography.bodyMedium,
             )
             return
@@ -43,12 +45,12 @@ fun BookmarksScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 16.dp,
-                bottom = contentPadding.calculateBottomPadding() + 16.dp,
+                start = Dimens.screenPadding,
+                end = Dimens.screenPadding,
+                top = Dimens.screenPadding,
+                bottom = contentPadding.calculateBottomPadding() + Dimens.screenPadding,
             ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens.listItemSpacing),
         ) {
             items(events, key = { it.id }) { event ->
                 EventCard(

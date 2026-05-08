@@ -6,7 +6,7 @@ Kotlin **Jetpack Compose** app for browsing nearby-style events: list, details, 
 
 - **MVVM** + **Hilt**, **Navigation Compose**
 - **Retrofit / OkHttp** (disk cache) + **Coil** for images
-- **Room** for events and bookmarks
+- **Room** for events (bookmark is stored as a boolean on each event row)
 - **Startup load**: fetch JSON once, persist to Room; UI observes the database
 - **Quality**: ktlint, GitHub Actions runs `./gradlew check`, JVM unit tests under `app/src/test`
 
@@ -26,7 +26,7 @@ Android Studio (current stable), **JDK 17**, device or emulator **API 24+**.
 |------|--------|
 | **Events** | List, bookmark toggle, distance when location permission granted |
 | **Details** | Full info, bookmark, Maps deep link |
-| **Bookmarks** | Saved events from Room |
+| **Bookmarks** | Filtered list where `isBookmarked = true` (stored in Room) |
 
 ### Events data & configuration
 

@@ -32,12 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.compose.ui.res.stringResource
+import com.example.eventplanner.R
 import com.example.eventplanner.ui.components.EventCard
+import com.example.eventplanner.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,35 +81,35 @@ fun EventsScreen(
 
     Column(modifier = Modifier.fillMaxSize().padding(contentPadding)) {
         TopAppBar(
-            title = { Text("Nearby Events") },
+            title = { Text(stringResource(R.string.title_nearby_events)) },
         )
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f, fill = true),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(Dimens.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(Dimens.listItemSpacing),
         ) {
             if (!hasLocationPermission) {
                 item(key = "location_banner") {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 48.dp)
+                            .heightIn(min = Dimens.touchTargetMinHeight)
                             .clickable(
-                                onClickLabel = "Enable location to see distance",
+                                onClickLabel = stringResource(R.string.location_banner_title),
                                 role = Role.Button,
                                 onClick = requestLocationPermission,
                             ),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Dimens.listItemSpacing),
                     ) {
                         Icon(Icons.Filled.LocationOn, contentDescription = null)
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Enable location to see distance", style = MaterialTheme.typography.titleSmall)
+                            Text(stringResource(R.string.location_banner_title), style = MaterialTheme.typography.titleSmall)
                             Text(
-                                "We use coarse location and only to calculate distance.",
+                                stringResource(R.string.location_banner_body),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

@@ -33,12 +33,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.eventplanner.ui.util.formatEpochMillis
 import androidx.core.net.toUri
+import androidx.compose.ui.res.stringResource
+import com.example.eventplanner.R
+import com.example.eventplanner.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,10 +55,10 @@ fun EventDetailsScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text(event?.title ?: "Event details") },
+            title = { Text(event?.title ?: stringResource(R.string.title_event_details_fallback)) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                 }
             },
             actions = {
@@ -64,9 +66,9 @@ fun EventDetailsScreen(
                 if (current != null) {
                     IconButton(onClick = { viewModel.setBookmarked(!current.isBookmarked) }) {
                         if (current.isBookmarked) {
-                            Icon(Icons.Filled.Bookmark, contentDescription = "Remove bookmark")
+                            Icon(Icons.Filled.Bookmark, contentDescription = stringResource(R.string.remove_bookmark))
                         } else {
-                            Icon(Icons.Filled.BookmarkBorder, contentDescription = "Add bookmark")
+                            Icon(Icons.Filled.BookmarkBorder, contentDescription = stringResource(R.string.add_bookmark))
                         }
                     }
                 }
@@ -76,8 +78,8 @@ fun EventDetailsScreen(
         val current = event
         if (current == null) {
             Text(
-                text = "Loading…",
-                modifier = Modifier.padding(contentPadding).padding(16.dp),
+                text = stringResource(R.string.loading),
+                modifier = Modifier.padding(contentPadding).padding(Dimens.screenPadding),
             )
             return
         }
@@ -101,7 +103,7 @@ fun EventDetailsScreen(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(240.dp),
+                        .height(Dimens.detailsImageHeight),
                     contentScale = ContentScale.Crop,
                 )
             }
@@ -109,17 +111,21 @@ fun EventDetailsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                    .padding(horizontal = Dimens.screenPadding, vertical = Dimens.screenPadding),
+                verticalArrangement = Arrangement.spacedBy(Dimens.listItemSpacing),
             ) {
                 Text(current.title, style = MaterialTheme.typography.headlineSmall)
                 Text(
-                    "${current.locationName} • ${formatEpochMillis(current.startTimeEpochMillis)}",
+                    stringResource(
+                        R.string.event_details_subtitle,
+                        current.locationName,
+                        formatEpochMillis(current.startTimeEpochMillis),
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(Dimens.spacerSm))
 
                 val mapsBlue = Color(0xFF4285F4)
                 Button(
@@ -140,8 +146,8 @@ fun EventDetailsScreen(
                         contentDescription = null,
                         tint = Color.White,
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Open in Maps")
+                    Spacer(modifier = Modifier.width(Dimens.spacerMd))
+                    Text(stringResource(R.string.open_in_maps))
                 }
             }
         }

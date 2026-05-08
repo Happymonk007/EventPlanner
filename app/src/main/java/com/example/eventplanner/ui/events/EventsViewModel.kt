@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eventplanner.domain.model.Event
 import com.example.eventplanner.domain.model.UserLocation
-import com.example.eventplanner.domain.repository.EventsRepository
-import com.example.eventplanner.domain.repository.LocationRepository
 import com.example.eventplanner.domain.repository.RefreshResult
+import com.example.eventplanner.domain.usecase.EventsUseCase
+import com.example.eventplanner.domain.usecase.LocationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,15 +22,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventsViewModel @Inject constructor(
-    private val eventsRepository: EventsRepository,
-    private val locationRepository: LocationRepository,
+    private val eventsUseCase: EventsUseCase,
+    private val locationUseCase: LocationUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EventsUiState())
     val uiState: StateFlow<EventsUiState> = _uiState.asStateFlow()
 
     val events: StateFlow<List<Event>> =
-        eventsRepository.observeEvents()
+        eventsUseCase.observeEvents()
             .combine(uiState.map { it.userLocation }.distinctUntilChanged()) { events, location ->
                 when (location) {
                     null -> events.sortedBy { it.startTimeEpochMillis }
@@ -42,7 +42,7 @@ class EventsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(errorMessage = null)
-            when (val result = eventsRepository.loadEvents()) {
+            when (val result = eventsUseCase.loadEvents()) {
                 is RefreshResult.Success -> Unit
                 is RefreshResult.Failed -> _uiState.value = _uiState.value.copy(errorMessage = result.reason)
             }
@@ -51,14 +51,14 @@ class EventsViewModel @Inject constructor(
 
     fun setBookmarked(eventId: String, bookmarked: Boolean) {
         viewModelScope.launch {
-            eventsRepository.setBookmarked(eventId, bookmarked)
+            eventsUseCase.setBookmarked(eventId = eventId, bookmarked = bookmarked)
         }
     }
 
     fun onLocationPermissionGranted() {
         if (_uiState.value.userLocation != null) return
         viewModelScope.launch {
-            val location: UserLocation? = locationRepository.getLastKnownLocation()
+            val location: UserLocation? = locationUseCase.getLastKnownLocation()
             _uiState.value = _uiState.value.copy(userLocation = location)
         }
     }

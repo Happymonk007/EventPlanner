@@ -2,7 +2,7 @@ package com.example.eventplanner.data.repository
 
 import com.example.eventplanner.BuildConfig
 import com.example.eventplanner.data.api.EventsApi
-import com.example.eventplanner.data.assets.EventsAssetDataSource
+import com.example.eventplanner.data.api.EventsAssetDataSource
 import com.example.eventplanner.data.db.EventDao
 import com.example.eventplanner.data.mappers.toDomain
 import com.example.eventplanner.data.mappers.toEntity
@@ -44,10 +44,8 @@ class EventsRepositoryImpl @Inject constructor(
                 eventDao.deleteAll()
                 eventDao.upsertAll(
                     dtos.map { dto ->
-                        dto.toEntity(
-                            fetchedAtEpochMillis = nowEpochMillis,
-                            isBookmarked = previouslyBookmarkedIds.contains(dto.id),
-                        )
+                        dto.toDomain(isBookmarked = previouslyBookmarkedIds.contains(dto.id))
+                            .toEntity(fetchedAtEpochMillis = nowEpochMillis)
                     },
                 )
                 RefreshResult.Success

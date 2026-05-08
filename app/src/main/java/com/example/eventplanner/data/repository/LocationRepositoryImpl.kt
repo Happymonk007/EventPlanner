@@ -1,4 +1,4 @@
-package com.example.eventplanner.data.location
+package com.example.eventplanner.data.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,7 +10,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class LocationRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : LocationRepository {
 
     @SuppressLint("MissingPermission")
@@ -20,4 +20,3 @@ class LocationRepositoryImpl @Inject constructor(
         return UserLocation(latitude = location.latitude, longitude = location.longitude)
     }
 }
-

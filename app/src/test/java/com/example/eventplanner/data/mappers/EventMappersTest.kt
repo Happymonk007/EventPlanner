@@ -8,7 +8,7 @@ import org.junit.Test
 class EventMappersTest {
 
     @Test
-    fun `dto toEntity maps fields and sets fetchedAt`() {
+    fun `dto toDomain maps fields`() {
         val dto = EventDto(
             id = "id1",
             title = "Title",
@@ -19,10 +19,30 @@ class EventMappersTest {
             imageUrl = "https://example.com/a.png",
         )
 
-        val entity: EventEntity = dto.toEntity(
-            fetchedAtEpochMillis = 1234L,
-            isBookmarked = false,
-        )
+        val domain = dto.toDomain(isBookmarked = false)
+        assertEquals("id1", domain.id)
+        assertEquals("Title", domain.title)
+        assertEquals("Loc", domain.locationName)
+        assertEquals(1.23, domain.latitude, 0.0)
+        assertEquals(4.56, domain.longitude, 0.0)
+        assertEquals(999L, domain.startTimeEpochMillis)
+        assertEquals("https://example.com/a.png", domain.imageUrl)
+        assertEquals(false, domain.isBookmarked)
+    }
+
+    @Test
+    fun `domain toEntity maps fields and sets fetchedAt`() {
+        val domain =
+            EventDto(
+                id = "id1",
+                title = "Title",
+                locationName = "Loc",
+                latitude = 1.23,
+                longitude = 4.56,
+                startTimeEpochMillis = 999L,
+                imageUrl = "https://example.com/a.png",
+            ).toDomain(isBookmarked = true)
+        val entity: EventEntity = domain.toEntity(fetchedAtEpochMillis = 1234L)
         assertEquals("id1", entity.id)
         assertEquals("Title", entity.title)
         assertEquals("Loc", entity.locationName)
@@ -31,6 +51,7 @@ class EventMappersTest {
         assertEquals(999L, entity.startTimeEpochMillis)
         assertEquals("https://example.com/a.png", entity.imageUrl)
         assertEquals(1234L, entity.fetchedAtEpochMillis)
+        assertEquals(true, entity.isBookmarked)
     }
 
     @Test
